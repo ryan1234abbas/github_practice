@@ -1,2 +1,3 @@
-print("Hello ryan")
-print("Hello steve")
+import requests
+res = requests.get("https://jsonplaceholder.typicode.com/posts/1")
+print(res.json())
