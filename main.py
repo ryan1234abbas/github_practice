@@ -1,5 +1,6 @@
 import requests 
 from flask import Flask
+import jsonify
 
 class ProductService:
     def __init__(self):
@@ -48,3 +49,27 @@ class ProductService:
                 range.append(p['name'])
             
         return range
+
+app = Flask(__name__)
+service = ProductService()
+
+@app.route('/products', methods=['POST'])
+def add_product():
+    data = request.get_json()
+    service.add_product(data['id'], data['name'], data['price'])
+    return jsonify({'msg': 'successs'}), 201
+
+@app.route('/products', methods=['GET'])
+def return_all_products():
+    products = service.return_all_products()
+    return jsonify({'products': products}), 200
+
+@app.route('/products/<int:id>', methods=['DELETE'])
+def delete_product(id):
+    service.delete_product(id)
+    return jsonify({"msg": 'deleted'}), 200
+
+@app.route('/products/<string:name>/exists', methods=['GET'])
+def product_exists(name):
+    res = service.product_exists(name)
+    return jsonify({"msg": res}), 200
